@@ -1,11 +1,13 @@
 package com.example.interviewtaskapplication
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.interviewtaskapplication.model.Category
@@ -21,26 +23,20 @@ class MainActivity : AppCompatActivity() {
         categoryRecyclerView = findViewById<RecyclerView>(R.id.activity_main__categories_recycler_view)
 
         categoryRecyclerView?.layoutManager = LinearLayoutManager(this)
-
         // TODO Изменить при реализации получения json
-        categoryRecyclerView?.adapter = CategoryAdapter(fillFakeCategories())
-    }
-
-    private fun fillFakeCategories() : List<Category> {
-        val N = 10
-        val array = ArrayList<Category>(N)
-        for (i in 1..N) {
-            array.add(Category(name = "Название категории",
-            type = "Тип категории",
-            color = "color", count = 100, icon=""))
+        val categories = JsonData.categories?: ArrayList()
+        categoryRecyclerView?.adapter = CategoryAdapter(categories) {
+                category ->
+                val intent = ObjectsActivity.newIntent(this@MainActivity, category)
+                startActivity(intent)
         }
-        return array
     }
 }
 
 class CategoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private var categoryNameTextView: TextView? = null
     private var countObjectInCategory: TextView? = null
+//    private val
 
     init {
         categoryNameTextView =
@@ -49,13 +45,16 @@ class CategoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
                 itemView.findViewById(R.id.categories_recycler_view_item__count_text_view)
     }
 
-    fun bind(holder: CategoryViewHolder, category: Category) {
-        holder.categoryNameTextView?.text = category.name
-        holder.countObjectInCategory?.text = category.count.toString()
+    fun bind(category: Category) {
+        categoryNameTextView?.text = category.name
+        countObjectInCategory?.text = category.count.toString()
     }
 }
 
-class CategoryAdapter(private var categories : List<Category>) : RecyclerView.Adapter<CategoryViewHolder>() {
+class CategoryAdapter(private var categories : List<Category>,
+                      var onClickListener : (Category) -> Unit)
+    : RecyclerView.Adapter<CategoryViewHolder>() {
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryViewHolder {
         val itemView = LayoutInflater.from(parent.context)
                 .inflate(R.layout.categories_recycler_view_item, parent, false)
@@ -65,7 +64,9 @@ class CategoryAdapter(private var categories : List<Category>) : RecyclerView.Ad
     override fun getItemCount() = categories.size
 
     override fun onBindViewHolder(holder: CategoryViewHolder, position: Int) {
-        holder.bind(holder, categories[position])
+        val category = categories[position]
+        holder.bind(category)
+        holder.itemView.setOnClickListener {onClickListener(category)}
     }
 
 }

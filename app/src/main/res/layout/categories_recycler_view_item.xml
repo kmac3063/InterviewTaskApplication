@@ -8,9 +8,8 @@
 
     <include layout="@layout/vertical_left_guideline"
         android:id="@+id/categories_recycler_view_item__left_guideline"/>
-
     <include
-        android:id="@+id/categories_recycler_view_item__guideline_right"
+        android:id="@+id/categories_recycler_view_item__right_guideline"
         layout="@layout/vertical_right_guideline"/>
 
     <TextView
