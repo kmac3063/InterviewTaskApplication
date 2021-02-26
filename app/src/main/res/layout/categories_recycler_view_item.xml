@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:background="@color/black">
 
     <include layout="@layout/vertical_left_guideline"
         android:id="@+id/categories_recycler_view_item__left_guideline"/>
-    <include
-        android:id="@+id/categories_recycler_view_item__right_guideline"
-        layout="@layout/vertical_right_guideline"/>
+
+    <include layout="@layout/vertical_right_guideline"
+        android:id="@+id/categories_recycler_view_item__right_guideline"/>
 
     <TextView
         android:id="@+id/categories_recycler_view_item__text_view"
@@ -66,4 +66,5 @@
         app:layout_constraintBottom_toBottomOf="@id/categories_recycler_view_item__circle_image_view"
         app:layout_constraintLeft_toLeftOf="@id/categories_recycler_view_item__circle_image_view"
         app:layout_constraintRight_toRightOf="@id/categories_recycler_view_item__circle_image_view"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

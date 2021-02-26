@@ -3,12 +3,9 @@ package com.example.interviewtaskapplication
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
-import android.location.LocationManager
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -22,39 +19,36 @@ import com.example.interviewtaskapplication.model.Object
 import com.squareup.picasso.Picasso
 import java.lang.Exception
 
-private const val EXTRA_KEY = "com.example.interviewtaskapplication.EXTRA_KEY"
+private const val CATEGORY_TYPE_EXTRA_KEY = "com.example.interviewtaskapplication.CATEGORY_TYPE_EXTRA_KEY"
 
 fun ImageView.setImageFromUrl(url: String) = Picasso.get().load(url).into(this)
 
 class ObjectsActivity : AppCompatActivity() {
-    var objectsRecyclerView: RecyclerView? = null
-    var toolbar: Toolbar? = null
-    var toolbarLinearLayout: LinearLayout? = null
+    private var objectsRecyclerView: RecyclerView? = null
+    private var toolbar: Toolbar? = null
+    private var toolbarLinearLayout: LinearLayout? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_objects)
 
-        toolbar = findViewById(R.id.toolbar)
-        objectsRecyclerView = findViewById(R.id.activity_objects__objects_recycler_view)
-        toolbarLinearLayout = findViewById(R.id.toolbar_linear_layout)
-
+        findAllViewById()
         initView()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        toolbar = null
-        toolbarLinearLayout = null
+    private fun findAllViewById() {
+        toolbar = findViewById(R.id.toolbar)
+        objectsRecyclerView = findViewById(R.id.activity_objects__objects_recycler_view)
+        toolbarLinearLayout = findViewById(R.id.toolbar__linear_layout)
     }
 
-    fun initView() {
+    private fun initView() {
         toolbarLinearLayout?.setOnClickListener { finish() }
 
         toolbar?.title = getString(R.string.activity_objects__objects)
         setSupportActionBar(toolbar)
-//        supportActionBar?.setDisplayShowTitleEnabled(false)
-        val type: String = intent.getStringExtra(EXTRA_KEY) ?: ""
+
+        val type: String = intent.getStringExtra(CATEGORY_TYPE_EXTRA_KEY) ?: ""
         initRecycler(type)
     }
 
@@ -62,29 +56,18 @@ class ObjectsActivity : AppCompatActivity() {
         objectsRecyclerView?.layoutManager = LinearLayoutManager(this)
 
         val objects = JsonData.getObjectsByCategoryType(type)
-        objectsRecyclerView?.adapter = ObjectAdapter(objects) { obj ->
-            startActivityWithMapIntent(obj)
+        objectsRecyclerView?.adapter = ObjectAdapter(objects) { selectedObject ->
+            startActivityWithMapIntent(selectedObject)
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.objects_activity_menu, menu)
-        return true
-    }
-//
-//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-//        when (item.itemId) {
-//            R.id.objects_activity_menu__back_item -> finish()
-//        }
-//        return true
-//    }
-
     private fun startActivityWithMapIntent(obj: Object) {
-        val intent = if (appInstalled()) getMapIntent(obj) else getAppInstallIntent()
+        val intent = if (mapAppIsInstalled()) getMapIntent(obj) else getMapAppInstallIntent()
         startActivity(intent)
     }
 
-    private fun appInstalled(): Boolean {
+    @SuppressLint("QueryPermissionsNeeded")
+    private fun mapAppIsInstalled(): Boolean {
         val uri = Uri.parse("dgis://");
         val intent = Intent(Intent.ACTION_VIEW, uri);
 
@@ -94,12 +77,13 @@ class ObjectsActivity : AppCompatActivity() {
         return isIntentSafe
     }
 
-    private fun getAppInstallIntent() : Intent {
+    private fun getMapAppInstallIntent() : Intent {
         val intent = Intent(Intent.ACTION_VIEW);
         intent.data = Uri.parse("market://details?id=ru.dublgis.dgismobile");
         return intent
     }
 
+    @SuppressLint("QueryPermissionsNeeded")
     private fun getMapIntent(obj: Object) : Intent {
         val uri = Uri.parse("dgis://2gis.ru/routeSearch/rsType/car/to/${obj.lon},${obj.lat}")
 
@@ -111,9 +95,9 @@ class ObjectsActivity : AppCompatActivity() {
     }
 
     class ObjectViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var objectImageView: ImageView? = null
-        var tittleTextView: TextView? = null
-        var descriptionTextView: TextView? = null
+        private var objectImageView: ImageView? = null
+        private var tittleTextView: TextView? = null
+        private var descriptionTextView: TextView? = null
 
         init {
             objectImageView = itemView.findViewById(
@@ -124,10 +108,10 @@ class ObjectsActivity : AppCompatActivity() {
                     R.id.objects_recycler_view_item__description_text_view)
         }
 
-        fun bind(o: Object) {
-            objectImageView?.setImageFromUrl(o.image)
-            tittleTextView?.text = o.name
-            descriptionTextView?.text = o.description
+        fun bind(obj: Object) {
+            objectImageView?.setImageFromUrl(obj.image)
+            tittleTextView?.text = obj.name
+            descriptionTextView?.text = obj.description
         }
     }
 
@@ -144,10 +128,10 @@ class ObjectsActivity : AppCompatActivity() {
         override fun getItemCount() = objects.size
 
         override fun onBindViewHolder(holder: ObjectViewHolder, position: Int) {
-            val o = objects[position]
+            val obj = objects[position]
 
             holder.bind(objects[position])
-            holder.itemView.setOnClickListener {onClickListener(o)}
+            holder.itemView.setOnClickListener { onClickListener(obj) }
         }
 
     }
@@ -156,8 +140,8 @@ class ObjectsActivity : AppCompatActivity() {
         fun newIntent(context: Context, category: Category) : Intent {
             val intent = Intent(context, ObjectsActivity::class.java)
 
-            Log.d("TAG_1", "newIntent ${category.type}")
-            intent.putExtra(EXTRA_KEY, category.type)
+            intent.putExtra(CATEGORY_TYPE_EXTRA_KEY, category.type)
+
             return intent
         }
     }

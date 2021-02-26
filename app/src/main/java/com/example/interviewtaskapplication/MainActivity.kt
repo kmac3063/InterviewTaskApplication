@@ -1,8 +1,5 @@
 package com.example.interviewtaskapplication
 
-import android.app.ActivityOptions
-import android.content.Intent
-import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,15 +9,11 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.Toolbar
-import androidx.core.app.ActivityOptionsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.interviewtaskapplication.BuildConfig.VERSION_CODE
 import com.example.interviewtaskapplication.model.Category
 import com.example.interviewtaskapplication.model.JsonData
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 
 fun ImageView.setColorFilterByWord(colorWord: String) {
@@ -32,23 +25,13 @@ class MainActivity : AppCompatActivity() {
     private var progressBar : ProgressBar? = null
     private var toolbarLinearLayout : LinearLayout? = null
     private var toolbar: Toolbar? = null
-    private var s: TextView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        categoryRecyclerView = findViewById(R.id.activity_main__categories_recycler_view)
-        progressBar = findViewById(R.id.activity_main__progress_bar)
-        toolbarLinearLayout = findViewById(R.id.toolbar_linear_layout)
-        toolbar = findViewById(R.id.toolbar)
-
-        categoryRecyclerView?.visibility = View.INVISIBLE
-        progressBar?.visibility = View.VISIBLE
-        toolbarLinearLayout?.visibility = View.GONE
-
-        toolbar?.title = getString(R.string.activity_main__categories)
-        setSupportActionBar(toolbar)
+        findAllViewById()
+        initView()
 
         JsonData.loadData {
             initRecycler()
@@ -58,20 +41,29 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun findAllViewById() {
+        categoryRecyclerView = findViewById(R.id.activity_main__categories_recycler_view)
+        progressBar = findViewById(R.id.activity_main__progress_bar)
+        toolbarLinearLayout = findViewById(R.id.toolbar__linear_layout)
+        toolbar = findViewById(R.id.toolbar)
+    }
+
+    private fun initView() {
+        categoryRecyclerView?.visibility = View.INVISIBLE
+        progressBar?.visibility = View.VISIBLE
+        toolbarLinearLayout?.visibility = View.GONE
+
+        toolbar?.title = getString(R.string.activity_main__categories)
+        setSupportActionBar(toolbar)
+    }
+
     private fun initRecycler() {
-        categoryRecyclerView?.layoutManager = LinearLayoutManager(this)
-        val categories = JsonData.categories?: ArrayList()
-        categoryRecyclerView?.adapter = CategoryAdapter(categories) { category ->
-            val intent = ObjectsActivity.newIntent(this@MainActivity, category)
+      categoryRecyclerView?.layoutManager = LinearLayoutManager(this)
+
+        val categories = JsonData.categories
+        categoryRecyclerView?.adapter = CategoryAdapter(categories) { selectedCategory ->
+            val intent = ObjectsActivity.newIntent(this@MainActivity, selectedCategory)
             startActivity(intent)
-//            val intent = Intent(this@MainActivity, ObjectsActivity::class.java)
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
-//                val options = ActivityOptionsCompat
-//                    .makeSceneTransitionAnimation(this, s as View, "robot")
-//                startActivity(intent, options.toBundle())
-//            } else {
-//                startActivity(intent)
-//            }
         }
     }
 }
@@ -80,14 +72,14 @@ class CategoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private var categoryNameTextView: TextView? = null
     private var countObjectInCategoryTextView: TextView? = null
     private var circleImageView: ImageView? = null
-//    private val
 
     init {
         categoryNameTextView =
-                itemView.findViewById(R.id.categories_recycler_view_item__text_view)
+            itemView.findViewById(R.id.categories_recycler_view_item__text_view)
         countObjectInCategoryTextView =
-                itemView.findViewById(R.id.categories_recycler_view_item__count_text_view)
-        circleImageView = itemView.findViewById(R.id.categories_recycler_view_item__circle_image_view)
+            itemView.findViewById(R.id.categories_recycler_view_item__count_text_view)
+        circleImageView =
+            itemView.findViewById(R.id.categories_recycler_view_item__circle_image_view)
     }
 
     fun bind(category: Category) {
@@ -115,5 +107,4 @@ class CategoryAdapter(private var categories : List<Category>,
         holder.bind(category)
         holder.itemView.setOnClickListener {onClickListener(category)}
     }
-
 }

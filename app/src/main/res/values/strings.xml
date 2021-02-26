@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">InterviewTaskApplication</string>
+    <string name="app_name">Interview Task Application</string>
     <string name="activity_main__categories">Категории</string>
     <string name="activity_objects__objects">Объекты</string>
 </resources>

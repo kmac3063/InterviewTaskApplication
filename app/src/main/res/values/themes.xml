@@ -22,6 +22,6 @@
     </style>
 
     <style name="WhiteAccent" parent="Theme.AppCompat">
-        <item name="colorAccent">@color/white</item> <!-- Whatever color you want-->
+        <item name="colorAccent">@color/white</item>
     </style>
 </resources>
