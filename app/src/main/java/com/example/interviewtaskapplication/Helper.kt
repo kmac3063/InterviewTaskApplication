@@ -1,6 +1,8 @@
 package com.example.interviewtaskapplication
 
+import android.content.Context
 import android.graphics.Color
+import android.net.ConnectivityManager
 import android.os.Handler
 import android.os.Looper
 import com.google.gson.Gson
@@ -43,7 +45,7 @@ object Helper {
 
     }
 
-    fun <T>parseJsonToObject(jsonString: String, classObject: Class<T>): T
+    fun <T>parseJsonToObject(jsonString: String, classObject: Class<T>) : T
             = Gson().fromJson<T>(jsonString, classObject)
 
     fun getColorByWord(colorWord: String) = when (colorWord.toLowerCase(Locale.ROOT)) {

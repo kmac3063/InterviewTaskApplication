@@ -9,11 +9,15 @@ const val JSON_DATA_URL = "https://rsttur.ru/api/base-app/map"
 object JsonData {
     var categories: List<Category> = Collections.emptyList()
         get() = data?.categories ?: Collections.emptyList()
+    var dataLoaded = false
+        get() = data != null
+
     private var data: Data? = null
     private val mapObjectByCategoryType = hashMapOf<String, MutableList<Object>>()
 
+
     fun loadData(loadedCallback: () -> Unit) {
-        if (data != null) {
+        if (dataLoaded) {
             loadedCallback()
             return
         }

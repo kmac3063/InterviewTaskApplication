@@ -1,14 +1,14 @@
 package com.example.interviewtaskapplication
 
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.ProgressBar
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -18,6 +18,12 @@ import com.example.interviewtaskapplication.model.JsonData
 
 fun ImageView.setColorFilterByWord(colorWord: String) {
     this.setColorFilter(Helper.getColorByWord(colorWord))
+}
+
+fun Context.isOnline(): Boolean {
+    val connMgr = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    val networkInfo: NetworkInfo? = connMgr.activeNetworkInfo
+    return networkInfo?.isConnected == true
 }
 
 class MainActivity : AppCompatActivity() {
@@ -32,12 +38,24 @@ class MainActivity : AppCompatActivity() {
 
         findAllViewById()
         initView()
+    }
 
-        JsonData.loadData {
-            initRecycler()
+    override fun onStart() {
+        super.onStart()
 
-            categoryRecyclerView?.visibility = View.VISIBLE
-            progressBar?.visibility = View.INVISIBLE
+        if (!JsonData.dataLoaded && !isOnline()) {
+            Toast.makeText(this, getString(R.string.no_internet_toast), Toast.LENGTH_LONG)
+                .show()
+            return
+        }
+
+        if (!JsonData.dataLoaded) {
+            JsonData.loadData {
+                initRecycler()
+
+                categoryRecyclerView?.visibility = View.VISIBLE
+                progressBar?.visibility = View.INVISIBLE
+            }
         }
     }
 
