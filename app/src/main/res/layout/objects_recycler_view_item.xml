@@ -22,7 +22,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:background="@color/black"
-        android:layout_marginVertical="10dp">
+        android:layout_marginVertical="12dp">
         <ImageView
             android:id="@+id/objects_recycler_view_item__image_image_view"
             android:scaleType="centerCrop"

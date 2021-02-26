@@ -1,17 +1,15 @@
 package com.example.interviewtaskapplication
 
-import android.content.Intent
-import android.graphics.Color
-import android.opengl.Visibility
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
-import android.widget.Toast
+import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.interviewtaskapplication.model.Category
@@ -25,6 +23,7 @@ fun ImageView.setColorFilterByWord(colorWord: String) {
 class MainActivity : AppCompatActivity() {
     private var categoryRecyclerView : RecyclerView? = null
     private var progressBar : ProgressBar? = null
+    private var toolbarLinearLayout : LinearLayout? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,15 +31,22 @@ class MainActivity : AppCompatActivity() {
 
         categoryRecyclerView = findViewById(R.id.activity_main__categories_recycler_view)
         progressBar = findViewById(R.id.activity_main__progress_bar)
+        toolbarLinearLayout = findViewById(R.id.toolbar_linear_layout)
 
         categoryRecyclerView?.visibility = View.INVISIBLE
         progressBar?.visibility = View.VISIBLE
+        toolbarLinearLayout?.visibility = View.GONE
+
+        val toolbar: Toolbar? = findViewById(R.id.toolbar)
+        toolbar?.title = getString(R.string.activity_main__categories)
+        setSupportActionBar(toolbar)
 
         JsonData.loadData {
             initRecycler()
 
             categoryRecyclerView?.visibility = View.VISIBLE
             progressBar?.visibility = View.INVISIBLE
+//            progressBar?.
         }
     }
 

@@ -3,6 +3,7 @@ package com.example.interviewtaskapplication
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.location.LocationManager
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
@@ -34,19 +35,25 @@ class ObjectsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_objects)
 
-        toolbar = findViewById(R.id.activity_objects__toolbar)
+        toolbar = findViewById(R.id.toolbar)
         objectsRecyclerView = findViewById(R.id.activity_objects__objects_recycler_view)
-        toolbarLinearLayout = findViewById(R.id.activity_objects__toolbar_linear_layout)
+        toolbarLinearLayout = findViewById(R.id.toolbar_linear_layout)
 
         initView()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        toolbar = null
+        toolbarLinearLayout = null
     }
 
     fun initView() {
         toolbarLinearLayout?.setOnClickListener { finish() }
 
+        toolbar?.title = getString(R.string.activity_objects__objects)
         setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
-
+//        supportActionBar?.setDisplayShowTitleEnabled(false)
         val type: String = intent.getStringExtra(EXTRA_KEY) ?: ""
         initRecycler(type)
     }
@@ -64,13 +71,13 @@ class ObjectsActivity : AppCompatActivity() {
         menuInflater.inflate(R.menu.objects_activity_menu, menu)
         return true
     }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.objects_activity_menu__back_item -> finish()
-        }
-        return true
-    }
+//
+//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+//        when (item.itemId) {
+//            R.id.objects_activity_menu__back_item -> finish()
+//        }
+//        return true
+//    }
 
     private fun startActivityWithMapIntent(obj: Object) {
         val intent = if (appInstalled()) getMapIntent(obj) else getAppInstallIntent()
