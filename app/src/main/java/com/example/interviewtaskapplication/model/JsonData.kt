@@ -15,6 +15,11 @@ object JsonData {
     val mapObjectByCategoryType = hashMapOf<String, MutableList<Object>>()
 
     fun loadData(callback: () -> Unit) {
+        if (data != null) {
+            callback()
+            return
+        }
+
         Helper.getJsonStringFromUrl(JSON_URL) { jsonString ->
             val jsonResponseBody = Helper.parseJsonToObject(jsonString, JsonResponseBody::class.java)
             data = jsonResponseBody.data

@@ -1,5 +1,8 @@
 package com.example.interviewtaskapplication
 
+import android.app.ActivityOptions
+import android.content.Intent
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,11 +12,15 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.Toolbar
+import androidx.core.app.ActivityOptionsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.interviewtaskapplication.BuildConfig.VERSION_CODE
 import com.example.interviewtaskapplication.model.Category
 import com.example.interviewtaskapplication.model.JsonData
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 
 fun ImageView.setColorFilterByWord(colorWord: String) {
@@ -24,6 +31,8 @@ class MainActivity : AppCompatActivity() {
     private var categoryRecyclerView : RecyclerView? = null
     private var progressBar : ProgressBar? = null
     private var toolbarLinearLayout : LinearLayout? = null
+    private var toolbar: Toolbar? = null
+    private var s: TextView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,12 +41,12 @@ class MainActivity : AppCompatActivity() {
         categoryRecyclerView = findViewById(R.id.activity_main__categories_recycler_view)
         progressBar = findViewById(R.id.activity_main__progress_bar)
         toolbarLinearLayout = findViewById(R.id.toolbar_linear_layout)
+        toolbar = findViewById(R.id.toolbar)
 
         categoryRecyclerView?.visibility = View.INVISIBLE
         progressBar?.visibility = View.VISIBLE
         toolbarLinearLayout?.visibility = View.GONE
 
-        val toolbar: Toolbar? = findViewById(R.id.toolbar)
         toolbar?.title = getString(R.string.activity_main__categories)
         setSupportActionBar(toolbar)
 
@@ -46,7 +55,6 @@ class MainActivity : AppCompatActivity() {
 
             categoryRecyclerView?.visibility = View.VISIBLE
             progressBar?.visibility = View.INVISIBLE
-//            progressBar?.
         }
     }
 
@@ -56,6 +64,14 @@ class MainActivity : AppCompatActivity() {
         categoryRecyclerView?.adapter = CategoryAdapter(categories) { category ->
             val intent = ObjectsActivity.newIntent(this@MainActivity, category)
             startActivity(intent)
+//            val intent = Intent(this@MainActivity, ObjectsActivity::class.java)
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+//                val options = ActivityOptionsCompat
+//                    .makeSceneTransitionAnimation(this, s as View, "robot")
+//                startActivity(intent, options.toBundle())
+//            } else {
+//                startActivity(intent)
+//            }
         }
     }
 }
