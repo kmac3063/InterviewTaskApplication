@@ -1,15 +1,19 @@
 package com.example.interviewtaskapplication.model
 
 import com.example.interviewtaskapplication.Helper
-import com.google.gson.Gson
+import okhttp3.internal.immutableListOf
 import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.jvm.javaClass
 
 const val JSON_URL = "https://rsttur.ru/api/base-app/map"
 
 object JsonData {
+    var data: Data? = null
     var categories: List<Category>? = null
+        get() = data?.categories ?: Collections.emptyList()
+
+    val mapObjectByCategoryType = hashMapOf<String, MutableList<Object>>()
+
     init {
         val N = 20
         val array = ArrayList<Category>(N)
@@ -18,22 +22,36 @@ object JsonData {
                 type = "Тип категории",
                 color = "color", count = 100, icon=""))
         }
-        categories = array
+        data?.categories = array
     }
 
     fun loadData(callback: () -> Unit) {
         Helper.getJsonStringFromUrl(JSON_URL) { jsonString ->
-//            Helper.parseJsonToObject()
+            val jsonResponseBody = Helper.parseJsonToObject(jsonString, JsonResponseBody::class.java)
+            data = jsonResponseBody.data
+
+            sortObjectsToCategories()
 
             callback()
         }
-
-//        1) скачать json
-//        2) распарсить json
-//        3) собрать метод для получения объектов по типу категории
     }
 
+    fun sortObjectsToCategories() {
+        if (data == null || data?.objects == null)
+            return
+
+        for (el in data!!.objects) {
+            if (mapObjectByCategoryType[el.type] == null) {
+                mapObjectByCategoryType[el.type] = ArrayList()
+            }
+            mapObjectByCategoryType[el.type]?.add(el)
+        }
+    }
+
+
     fun getObjectsByCategoryType(type: String) : List<Object> {
+        return mapObjectByCategoryType[type]?.toList()?: Collections.emptyList()
+
         val N = 20
         val array = ArrayList<Object>(N)
         for (i in 1..N) {
@@ -52,4 +70,6 @@ object JsonData {
         }
         return array
     }
+
+
 }

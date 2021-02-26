@@ -1,12 +1,14 @@
 package com.example.interviewtaskapplication
 
 import android.content.Intent
+import android.graphics.Color
 import android.opengl.Visibility
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
@@ -14,6 +16,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.interviewtaskapplication.model.Category
 import com.example.interviewtaskapplication.model.JsonData
+
+
+fun ImageView.setColorFilterByWord(colorWord: String) {
+    this.setColorFilter(Helper.getColorByWord(colorWord))
+}
 
 class MainActivity : AppCompatActivity() {
     private var categoryRecyclerView : RecyclerView? = null
@@ -49,19 +56,22 @@ class MainActivity : AppCompatActivity() {
 
 class CategoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private var categoryNameTextView: TextView? = null
-    private var countObjectInCategory: TextView? = null
+    private var countObjectInCategoryTextView: TextView? = null
+    private var circleImageView: ImageView? = null
 //    private val
 
     init {
         categoryNameTextView =
                 itemView.findViewById(R.id.categories_recycler_view_item__text_view)
-        countObjectInCategory =
+        countObjectInCategoryTextView =
                 itemView.findViewById(R.id.categories_recycler_view_item__count_text_view)
+        circleImageView = itemView.findViewById(R.id.categories_recycler_view_item__circle_image_view)
     }
 
     fun bind(category: Category) {
         categoryNameTextView?.text = category.name
-        countObjectInCategory?.text = category.count.toString()
+        countObjectInCategoryTextView?.text = category.count.toString()
+        circleImageView?.setColorFilterByWord(category.color)
     }
 }
 

@@ -1,6 +1,6 @@
 package com.example.interviewtaskapplication.model
 
-class Example(var success: Boolean, var error: Any, var time: String, var data: Data)
+class JsonResponseBody(var success: Boolean, var error: Any, var time: String, var data: Data)
 
 class Data(var geo: Geo, var categories: List<Category>, var objects: List<Object>)
 

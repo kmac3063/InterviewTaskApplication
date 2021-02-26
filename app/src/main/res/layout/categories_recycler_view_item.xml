@@ -43,7 +43,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="@id/categories_recycler_view_item__separator"
         android:layout_marginRight="10dp"
-        />
+        android:layout_marginEnd="10dp"/>
 
 
     <ImageView
