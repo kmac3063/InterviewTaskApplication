@@ -5,6 +5,7 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/black">
+
     <include layout="@layout/vertical_left_guideline"
         android:id="@+id/objects_recycler_view_item__left_guideline"/>
     <include
@@ -14,9 +15,10 @@
     <ImageView
         android:id="@+id/objects_recycler_view_item__image_image_view"
         android:layout_width="160dp"
-        android:layout_height="120dp"
+        android:layout_height="100dp"
         android:textColor="@color/white"
         android:textSize="10pt"
+        android:layout_marginVertical="20dp"
         app:layout_constraintLeft_toLeftOf="@id/objects_recycler_view_item__left_guideline"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>

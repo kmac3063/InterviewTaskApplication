@@ -1,11 +1,13 @@
 package com.example.interviewtaskapplication
 
 import android.content.Intent
+import android.opengl.Visibility
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,20 +17,32 @@ import com.example.interviewtaskapplication.model.JsonData
 
 class MainActivity : AppCompatActivity() {
     private var categoryRecyclerView : RecyclerView? = null
+    private var progressBar : ProgressBar? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        categoryRecyclerView = findViewById<RecyclerView>(R.id.activity_main__categories_recycler_view)
+        categoryRecyclerView = findViewById(R.id.activity_main__categories_recycler_view)
+        progressBar = findViewById(R.id.activity_main__progress_bar)
 
+        categoryRecyclerView?.visibility = View.INVISIBLE
+        progressBar?.visibility = View.VISIBLE
+
+        JsonData.loadData {
+            initRecycler()
+
+            categoryRecyclerView?.visibility = View.VISIBLE
+            progressBar?.visibility = View.INVISIBLE
+        }
+    }
+
+    private fun initRecycler() {
         categoryRecyclerView?.layoutManager = LinearLayoutManager(this)
-        // TODO Изменить при реализации получения json
         val categories = JsonData.categories?: ArrayList()
-        categoryRecyclerView?.adapter = CategoryAdapter(categories) {
-                category ->
-                val intent = ObjectsActivity.newIntent(this@MainActivity, category)
-                startActivity(intent)
+        categoryRecyclerView?.adapter = CategoryAdapter(categories) { category ->
+            val intent = ObjectsActivity.newIntent(this@MainActivity, category)
+            startActivity(intent)
         }
     }
 }
@@ -65,6 +79,7 @@ class CategoryAdapter(private var categories : List<Category>,
 
     override fun onBindViewHolder(holder: CategoryViewHolder, position: Int) {
         val category = categories[position]
+
         holder.bind(category)
         holder.itemView.setOnClickListener {onClickListener(category)}
     }
